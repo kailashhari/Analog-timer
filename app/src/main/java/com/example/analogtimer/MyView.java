@@ -37,6 +37,8 @@ public class MyView extends View {
     private Rect rect = new Rect();
     float curMin = 0, curSec =0;
 
+    float secNumRad, secCirRad, secHandRad, secCenRad, minNumRad, minHandRad, minCirRad, minCenRad, minElevation, recL, recB, recTP, textP, curTimeSize, textSize;
+
 
     public MyView(Context context){
 
@@ -50,6 +52,21 @@ public class MyView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        secCirRad = (float)(getWidth()/2.3);
+        secCenRad = (float)(getWidth()/50);
+        secNumRad = (float)(secCirRad*0.89);
+        secHandRad = (float)(getWidth()/3.4);
+        minCirRad = (float)(getWidth()/6.5);
+        minCenRad = (float)(getWidth()/70);
+        minNumRad = (float)(minCirRad*0.85);
+        minHandRad = (float)(minCirRad * 0.7);
+        minElevation = (float)(secCirRad/2-20);
+        recL = (float)(getWidth()/3);
+        recB = (float)(getHeight()/11);
+        recTP = (float)(getHeight()/3);
+        textP = (float)(getHeight()/2.7);
+        curTimeSize = (float)(getWidth()/15);
+        textSize = (float)(getHeight()/18);
         canvas = new Canvas();
 
     }
@@ -68,7 +85,7 @@ public class MyView extends View {
         drawMinHand(canvas);
 
         paint.reset();
-        paint.setTextSize(100);
+        paint.setTextSize(curTimeSize);
         paint.setColor(Color.BLACK);
         paint.getTextBounds(curTime, 0, curTime.length(), rect);
         int x =(int) (getWidth()/2)-rect.width()/2;
@@ -79,17 +96,17 @@ public class MyView extends View {
         paint.setColor(Color.BLUE);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(20);
-        canvas.drawRect(getWidth()/2-200, getHeight()/2+700, getWidth()/2+200, getHeight()/2+850, paint);
+        canvas.drawRect(getWidth()/2-200, getHeight()/2+recTP, getWidth()/2+200, getHeight()/2+recTP+recB, paint);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setStrokeWidth(2);
-        paint.setTextSize(100);
+        paint.setTextSize(textSize);
         paint.getTextBounds("RESET", 0, "RESET".length(), rect);
         x =(int) (getWidth()/2)-rect.width()/2;
-        y =(int) (getHeight()/2)+rect.height()/2+ 775;
+        y =(int) ((getHeight()/2)+rect.height()/2+ recTP+recB/2.3);
         canvas.drawText("RESET", x, y, paint);
         paint.getTextBounds("Tap to start and stop", 0, "Tap to start and stop".length(), rect);
         x =(int) (getWidth()/2)-rect.width()/2;
-        y =(int) (getHeight()/2)+rect.height()/2- 730;
+        y =(int) ((getHeight()/2)+rect.height()/2- textP);
         canvas.drawText("Tap to start and stop", x, y, paint);
     }
 
@@ -101,24 +118,24 @@ public class MyView extends View {
         paint.setStrokeWidth(6);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
-        canvas.drawCircle(getWidth()/2, getHeight()/2-215, 180, paint);
+        canvas.drawCircle(getWidth()/2, getHeight()/2-minElevation, minCirRad, paint);
     }
 
     private void drawMinCentre(Canvas canvas) {
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(getWidth()/2, getHeight()/2-215, 10, paint);
+        canvas.drawCircle(getWidth()/2, getHeight()/2-minElevation, minCenRad, paint);
     }
 
     private void drawMinNumerals(Canvas canvas){
 
-        paint.setTextSize(30);
+        paint.setTextSize(curTimeSize/2);
         for(int minute : minutes){
             String tmp = String.valueOf(minute);
             paint.getTextBounds(tmp, 0, tmp.length(), rect);
             double angle = (2 * Math.PI/15) * minute;
-            int x =(int) (getWidth()/2 + (Math.sin(angle) * 150)-rect.width()/2);
-            int y =(int) (getHeight()/2 - (Math.cos(angle) * 150)+rect.height()/2);
-            canvas.drawText(tmp, x, y-215, paint);
+            int x =(int) (getWidth()/2 + (Math.sin(angle) * minNumRad)-rect.width()/2);
+            int y =(int) (getHeight()/2 - (Math.cos(angle) * minNumRad)+rect.height()/2);
+            canvas.drawText(tmp, x, y-minElevation, paint);
         }
     }
     private void drawMinHand(Canvas canvas){
@@ -127,9 +144,9 @@ public class MyView extends View {
         paint.setStrokeWidth(8);
         float curCurMin = curMin;
         double angle = (curCurMin * 2 * Math.PI)/15;
-        int x = (int) (getWidth()/2 + 120 * Math.sin(angle));
-        int y = (int) (getHeight()/2 - 120 * Math.cos(angle));
-        canvas.drawLine(getWidth()/2, getHeight()/2-215, x, y-215, paint);
+        int x = (int) (getWidth()/2 + minHandRad * Math.sin(angle));
+        int y = (int) (getHeight()/2 - minHandRad * Math.cos(angle));
+        canvas.drawLine(getWidth()/2, getHeight()/2-minElevation, x, y-minElevation, paint);
     }
 
 
@@ -140,25 +157,25 @@ public class MyView extends View {
         paint.setStrokeWidth(10);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
-        canvas.drawCircle(getWidth()/2, getHeight()/2, 500, paint);
+        canvas.drawCircle(getWidth()/2, getHeight()/2, secCirRad, paint);
 
     }
 
     private void drawSecCentre(Canvas canvas){
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(getWidth()/2, getHeight()/2, 30, paint);
+        canvas.drawCircle(getWidth()/2, getHeight()/2, secCenRad, paint);
 
     }
 
     private void drawSecNumerals(Canvas canvas){
 
-        paint.setTextSize(80);
+        paint.setTextSize(curTimeSize);
         for(int second : seconds){
             String tmp = String.valueOf(second);
             paint.getTextBounds(tmp, 0, tmp.length(), rect);
             double angle = (Math.PI/15) * second;
-            int x =(int) (getWidth()/2 + (Math.sin(angle) * 430)-rect.width()/2);
-            int y =(int) (getHeight()/2 - (Math.cos(angle) * 430)+rect.height()/2);
+            int x =(int) (getWidth()/2 + (Math.sin(angle) * secNumRad)-rect.width()/2);
+            int y =(int) (getHeight()/2 - (Math.cos(angle) * secNumRad)+rect.height()/2);
             canvas.drawText(tmp, x, y, paint);
         }
     }
@@ -173,8 +190,8 @@ public class MyView extends View {
 
         }
         double angle = (curCurSec * Math.PI)/15;
-        int x = (int) (getWidth()/2 + 300 * Math.sin(angle));
-        int y = (int) (getHeight()/2 - 300 * Math.cos(angle));
+        int x = (int) (getWidth()/2 + secHandRad * Math.sin(angle));
+        int y = (int) (getHeight()/2 - secHandRad * Math.cos(angle));
         canvas.drawLine(getWidth()/2, getHeight()/2, x, y, paint);
 
     }
@@ -234,7 +251,7 @@ public class MyView extends View {
     }
     private boolean isReset(float x, float y){
 
-        return ((x > (getWidth() / 2 - 220)) && (x < (getWidth() / 2 + 220))) && ((y > (getHeight() / 2 + 680)) && (y < (getHeight() / 2 + 870)));
+        return ((x > (getWidth() / 2 - recL/2-10)) && (x < (getWidth() / 2 + recL/2+10))) && ((y > (getHeight() / 2 + recTP-10)) && (y < (getHeight() / 2 + recTP+ recB+10)));
     }
 
 }
